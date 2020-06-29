@@ -39,7 +39,6 @@ public class ApiUtil {
                 sb.append(k).append("=").append(paramterMap.get(k).trim()).append("&");
             }
         }
-
         return sb.toString();
     }
 
@@ -70,10 +69,8 @@ public class ApiUtil {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             Method method = handlerMethod.getMethod();
             NotRepeatSubmit annotation = method.getAnnotation(NotRepeatSubmit.class);
-
             return annotation;
         }
-
         return null;
     }
 }

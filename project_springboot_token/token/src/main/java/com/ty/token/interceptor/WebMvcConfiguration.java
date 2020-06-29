@@ -17,11 +17,17 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     @Autowired
     private TokenInterceptor tokenInterceptor;
 
+    @Autowired
+    private ApiInterceptor apiInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         super.addInterceptors(registry);
         registry.addInterceptor(tokenInterceptor)
                 .addPathPatterns("/api/**")
                 .excludePathPatterns(excludePathPatterns);
+        registry.addInterceptor(apiInterceptor)
+                .addPathPatterns("/hello/**")
+                .excludePathPatterns("/api/**");
     }
 }

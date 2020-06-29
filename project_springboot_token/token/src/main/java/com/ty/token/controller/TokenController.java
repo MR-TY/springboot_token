@@ -38,24 +38,18 @@ public class TokenController {
     @PostMapping("/api_token")
     public ApiResponse<AccessToken> apiToken(String appId, @RequestHeader("timestamp") String timestamp, @RequestHeader("sign") String sign) {
         Assert.isTrue(!StringUtils.isEmpty(appId) && !StringUtils.isEmpty(timestamp) && !StringUtils.isEmpty(sign), "参数错误");
-
         long reqeustInterval = System.currentTimeMillis() - Long.valueOf(timestamp);
         Assert.isTrue(reqeustInterval < 5 * 60 * 1000, "请求过期，请重新请求");
-
         // 1. 根据appId查询数据库获取appSecret
         AppInfo appInfo = new AppInfo("1", "12345678954556");
-
         // 2. 校验签名
         String signString = timestamp + appId + appInfo.getKey();
         String signature = MD5Util.encode(signString);
         Assert.isTrue(signature.equals(sign), "签名错误");
-
         // 3. 如果正确生成一个token保存到redis中，如果错误返回错误信息
         AccessToken accessToken = this.saveToken(0, appInfo, null);
-
         return ApiResponse.success(accessToken);
     }
-
 
     @NotRepeatSubmit(5000)
     @PostMapping("user_token")
@@ -65,7 +59,6 @@ public class TokenController {
         String pwd = password + userInfo.getSalt();
         String passwordMD5 = MD5Util.encode(pwd);
         Assert.isTrue(passwordMD5.equals(userInfo.getPassword()), "密码错误");
-
         // 2. 保存Token
         AppInfo appInfo = new AppInfo("1", "12345678954556");
         AccessToken accessToken = this.saveToken(1, appInfo, userInfo);
@@ -75,13 +68,11 @@ public class TokenController {
 
     private AccessToken saveToken(int tokenType, AppInfo appInfo, UserInfo userInfo) {
         String token = UUID.randomUUID().toString();
-
         // token有效期为2小时
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.SECOND, 7200);
         Date expireTime = calendar.getTime();
-
         // 4. 保存token
         ValueOperations<String, TokenInfo> operations = redisTemplate.opsForValue();
         TokenInfo tokenInfo = new TokenInfo();
@@ -101,7 +92,6 @@ public class TokenController {
         String signString = timestamp + "1" + "12345678954556";
         String sign = MD5Util.encode(signString);
         System.out.println(sign);
-
         System.out.println("-------------------");
         signString = "password=123456&username=1&12345678954556" + "ff03e64b-427b-45a7-b78b-47d9e8597d3b1529815393153sdfsdfsfs" + timestamp + "A1scr6";
         sign = MD5Util.encode(signString);
