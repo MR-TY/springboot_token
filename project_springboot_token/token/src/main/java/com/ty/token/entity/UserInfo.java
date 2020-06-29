@@ -36,4 +36,7 @@ public class UserInfo {
         this.password = password;
         this.salt = salt;
     }
+
+    public UserInfo() {
+    }
 }

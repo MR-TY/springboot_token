@@ -53,16 +53,9 @@ public class ApiResponse<T> {
     private static <T> String signData(T data) {
         // TODO 查询key
         String key = "12345678954556";
-        Map<String, String> responseMap = null;
-        try {
-            responseMap = getFields(data);
-        } catch (IllegalAccessException e) {
-            return null;
-        }
-        String urlComponent = ApiUtil.concatSignString(responseMap);
-        String signature = urlComponent + "key=" + key;
+        UserInfo userInfo = (UserInfo)data;
+        String signature = key + userInfo.getAccessToken().getToken();
         String sign = MD5Util.encode(signature);
-
         return sign;
     }
 
