@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 @Configuration
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
-    private static final String[] excludePathPatterns  = {"/api/token/api_token"};
+    private static final String[] excludePathPatterns  = {"/api/token/api_token","/api/token/user_token"};
 
     @Autowired
     private TokenInterceptor tokenInterceptor;
@@ -24,10 +24,11 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     public void addInterceptors(InterceptorRegistry registry) {
         super.addInterceptors(registry);
         registry.addInterceptor(tokenInterceptor)
-                .addPathPatterns("/api/**")
+                .addPathPatterns("/user/api/**")
                 .excludePathPatterns(excludePathPatterns);
         registry.addInterceptor(apiInterceptor)
                 .addPathPatterns("/hello/**")
                 .excludePathPatterns("/api/**");
     }
+
 }

@@ -40,9 +40,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
         String token = request.getHeader("token");
         String timestamp = request.getHeader("timestamp");
         // 随机字符串
-        String nonce = request.getHeader("nonce");
-        String sign = request.getHeader("sign");
-        Assert.isTrue(!StringUtils.isEmpty(token) && !StringUtils.isEmpty(timestamp) && !StringUtils.isEmpty(sign), "参数错误");
+        Assert.isTrue(!StringUtils.isEmpty(token) && !StringUtils.isEmpty(timestamp), "参数错误");
 
         // 获取超时时间
         NotRepeatSubmit notRepeatSubmit = ApiUtil.getNotRepeatSubmit(handler);
@@ -56,21 +54,6 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
         ValueOperations<String, TokenInfo> tokenRedis = redisTemplate.opsForValue();
         TokenInfo tokenInfo = tokenRedis.get(token);
         Assert.notNull(tokenInfo, "token错误");
-
-        // 4. 校验签名(将所有的参数加进来，防止别人篡改参数) 所有参数看参数名升续排序拼接成url
-        // 请求参数 + token + timestamp + nonce
-        String signString = ApiUtil.concatSignString(request) + tokenInfo.getAppInfo().getKey() + token + timestamp + nonce;
-        String signature = MD5Util.encode(signString);
-        boolean flag = signature.equals(sign);
-        Assert.isTrue(flag, "签名错误");
-
-        // 5. 拒绝重复调用(第一次访问时存储，过期时间和请求超时时间保持一致), 只有标注不允许重复提交注解的才会校验
-        if (notRepeatSubmit != null) {
-            ValueOperations<String, Integer> signRedis = redisTemplate.opsForValue();
-            boolean exists = redisTemplate.hasKey(sign);
-            Assert.isTrue(!exists, "请勿重复提交");
-            signRedis.set(sign, 0, expireTime, TimeUnit.MILLISECONDS);
-        }
 
         return super.preHandle(request, response, handler);
     }

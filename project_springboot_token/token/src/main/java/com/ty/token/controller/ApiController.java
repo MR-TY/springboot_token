@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/hello")
-public class HelloWordController {
+public class ApiController {
     /**
      * 注解后需要拦截判断
      * @return

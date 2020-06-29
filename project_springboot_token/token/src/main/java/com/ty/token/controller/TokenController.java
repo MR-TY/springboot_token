@@ -51,7 +51,7 @@ public class TokenController {
         return ApiResponse.success(accessToken);
     }
 
-    @NotRepeatSubmit(5000)
+
     @PostMapping("user_token")
     public ApiResponse<UserInfo> userToken(String username, String password) {
         // 根据用户名查询密码, 并比较密码(密码可以RSA加密一下)
