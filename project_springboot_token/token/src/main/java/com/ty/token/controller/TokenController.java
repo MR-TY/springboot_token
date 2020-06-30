@@ -39,7 +39,7 @@ public class TokenController {
     public ApiResponse<AccessToken> apiToken(String appId, @RequestHeader("timestamp") String timestamp, @RequestHeader("sign") String sign) {
         Assert.isTrue(!StringUtils.isEmpty(appId) && !StringUtils.isEmpty(timestamp) && !StringUtils.isEmpty(sign), "参数错误");
         long reqeustInterval = System.currentTimeMillis() - Long.valueOf(timestamp);
-        Assert.isTrue(reqeustInterval < 5 * 60 * 1000, "请求过期，请重新请求");
+        Assert.isTrue(reqeustInterval < 50 * 60 * 1000, "请求过期，请重新请求");
         // 1. 根据appId查询数据库获取appSecret
         AppInfo appInfo = new AppInfo("1", "12345678954556");
         // 2. 校验签名
@@ -48,7 +48,7 @@ public class TokenController {
         Assert.isTrue(signature.equals(sign), "签名错误");
         // 3. 如果正确生成一个token保存到redis中，如果错误返回错误信息
         AccessToken accessToken = this.saveToken(0, appInfo, null);
-        return ApiResponse.success(accessToken);
+        return ApiResponse.successApi(accessToken);
     }
 
 

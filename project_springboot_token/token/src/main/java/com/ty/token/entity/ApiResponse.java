@@ -34,6 +34,10 @@ public class ApiResponse<T> {
         return response(ApiCodeEnum.SUCCESS.getCode(), ApiCodeEnum.SUCCESS.getMsg(), data);
     }
 
+    public static <T> ApiResponse successApi(T data) {
+        return responseApi(ApiCodeEnum.SUCCESS.getCode(), ApiCodeEnum.SUCCESS.getMsg(), data);
+    }
+
     public static ApiResponse error(String code, String msg) {
         return response(code, msg, null);
     }
@@ -48,6 +52,27 @@ public class ApiResponse<T> {
         response.setSign(sign);
 
         return response;
+    }
+
+    public static <T> ApiResponse responseApi(String code, String msg, T data) {
+        ApiResult result = new ApiResult(code, msg);
+        ApiResponse response = new ApiResponse();
+        response.setResult(result);
+        response.setData(data);
+
+        String sign = signDataApi(data);
+        response.setSign(sign);
+
+        return response;
+    }
+
+    private static <T> String signDataApi(T data) {
+        // TODO 查询key
+        String key = "12345678954556";
+        AccessToken accessToken = (AccessToken)data;
+        String signature = key + accessToken.getToken();
+        String sign = MD5Util.encode(signature);
+        return sign;
     }
 
     private static <T> String signData(T data) {
