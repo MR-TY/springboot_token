@@ -1,6 +1,5 @@
 package com.ty.token.controller;
 
-import com.ty.token.config.annotation.NotRepeatSubmit;
 import com.ty.token.entity.*;
 import com.ty.token.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
